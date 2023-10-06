@@ -167,3 +167,6 @@ tags
 
 # ruff
 .ruff_cache
+
+# .bin (temporary) models are to big to push them, need compression
+.bin

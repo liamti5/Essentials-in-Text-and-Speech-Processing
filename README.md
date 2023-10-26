@@ -12,15 +12,29 @@ Two major datasets are used in this project: Bestande backend ratings and review
 1. Bestande terminated its service in 2022 and with the hope of someone taking over, the founder disclosed the database over 2016 and 2022 on Bestande.ch. Therefore, we took it without any data scraping and built our project on it. The corpus can be found in the data folder. 
 2. The HASOC (Hate Speech and Offensive Content) German data set contains publications from different social networks that are classified according to two tasks. Task A handles a binary classification, where NOT label means Non Hate Offensive and HOF means Hate and Offensive. As per the second task, it performs a more detailed classification of the HOF samples, such as HATE for Hate Speech, OFFN for offensive, PRFN for profane, or NONE if the classification in Task A was NOT. The corpus can be found in the /data/HateSpeechRecognition folder
 
+The original datasets, as well as the preprocessed datasets and their respective divisions into training, testing, and validation datasets can be found under data/<nlp_task>
+
+### Data Preprocessing
+All the data preprocessing scripts can be found under code/.
+- dataCleaning.ipynb : Created datasets for each language. Prepared the dataset for machine translation.
+- dataPreprocessing_binary_ternary_usefulnessPredictor.ipynb : Labelling for binary classification
+- dataPreprocessing_usefulnessPredictor.ipynb : Labelling for multiclass classification
+  
 ### Model Training
 #### Hate Recognition
 Inspired by the paper Offensive Language Identification using a German BERT model, it was decided to use the bert-base-german-cased pre-trained model since it is a very popular and trained exclusively with about 12 GB of German texts. More details about training can be found in the hateRecognitionGerman notebook. 
  
 #### Review Usefulness Prediciton
-To generate a prediction of the usefulness of a review it was decided to fine-tune a pretrained model. As first approach, the bert-base-multilingual-uncased-sentiment was selected since it is a popular Text Classification model used to predict the sentiment of a review on a scale 1 to 5. This model was trained with 137k German reviews which is roughly 20% of the corpus. However, the fine-tuned model performed poorly achieving a 50% accuracy with different training argument configurations using the multi-class classification Bestande data set. One possible explanation for this is that as a multilingual model, it is not only trained with German data, but also with other languages. For this reason it was decided to use again the bert-base-german-cased for the multi-class classification (usefulnessPredictor BERT.ipnyb). The best performance model achieved a 68% training accuracy and 61% training accuracy. The model however failed to generate
-predictions for classes 2 and 3. All the code for training and data preprocessing can be found in the code directory. 
+Different models were fine-tunned to evaluate automatically if a review would be useful for another person or not.
+- usefulnessPredictor_BERT.ipynb : fine-tunning of bert-base-cased-german and bert-base-multilingual-uncased-sentiment for multiclass classification.
+- usefulnessPredictor_binaryClassification.ipynb : fine-tunning of bert-base-cased-german for binary classification.
+- usefulnessPredictor_distilbert-base-german-cased.ipynb : fine-tunning for multiclass classification
+- usefulnessPredictor_distilbert-base-german-cased_binary.ipynb : fine-tunning for binary classification.
+
+All the code for training and data preprocessing can be found in the code directory. 
 
 ## Models on Hugging Face
 Both finetuned models can be found on Hugging Face: 
-- Review Usefulness Prediction: https://huggingface.co/jorgeortizv/reviewUsefulness-binaryClassification
+- Review Usefulness Prediction, binary classification: https://huggingface.co/jorgeortizv/reviewUsefulness-binaryClassification
 - Hate Speech Recocnition: https://huggingface.co/jorgeortizv/BERT-hateSpeechRecognition-German
+- Review Usefulness Prediction, Multiclass classification: https://huggingface.co/jorgeortizv/reviewUsefulness-multiclassClassification
